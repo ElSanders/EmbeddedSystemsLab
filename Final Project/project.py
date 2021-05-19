@@ -1,5 +1,12 @@
+#Blinklib : https://pypi.org/project/blynklib/
+#smbus2   : https://pypi.org/project/smbus2/
+#RTC      : https://datasheets.maximintegrated.com/en/ds/DS3231.pdf
+#Sensor   : https://cdn-shop.adafruit.com/datasheets/1899_HTU21D.pdf
 from smbus2 import SMBus #pip install smbus2
 import blynklib #sudo pip install blynklib
+
+BlynkAuth = ''
+blynk = blynklib.Blynk(BlynkAuth)
 
 i2c = SMBus(1) #número de bus i2c
 #Device addresses
@@ -14,12 +21,4 @@ while(True):
     if abs(currentTime[0] - oldSeconds) >= 10:
         oldSeconds = currentTime[0]
         temp = i2c.read_byte_data(device["HTU21D"],0xE3)
-        #blynk(temp)
-
-
-
-
-#i2c.write_byte_data(Device Address, Register Address, Value)
-#i2c.write_i2c_block_data(Device Address, Register Address, [value1, value2,….])
-#i2c.read_byte_data(Device Address, Register Address)
-#i2c.read_i2c_block_data(Device Address, Register Address, block of bytes)
+        blynk.virtual_writee(pin,data)
