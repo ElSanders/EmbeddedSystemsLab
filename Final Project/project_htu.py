@@ -5,7 +5,6 @@
 
 from smbus2 import SMBus #pip install smbus2
 import blynklib #sudo pip install blynklib
-import time
 import board
 from adafruit_htu21d import HTU21D #pip install adafruit-circuitpython-htu21d
 
