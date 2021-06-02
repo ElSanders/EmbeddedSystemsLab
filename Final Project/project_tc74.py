@@ -6,10 +6,10 @@
 from smbus2 import SMBus #pip install smbus2
 import blynklib #sudo pip install blynklib
 
-BlynkAuth = 'yfW9zija6MMG9q5DKPBM8JRalVZPX845'
+BlynkAuth = 'keyyATGBfXBE3uI7UJU0EUIyzSxY_46M'
 blynk = blynklib.Blynk(BlynkAuth)
 i2c = SMBus(1) #número de bus i2c
-device = {"HTU21D": 0x40,
+device = {"DS1338": 0x68,
           "TC74" : 0x4D
           }
 setTemp = 0
@@ -25,12 +25,12 @@ pins = {"Temp" : 0,
         }
 
 def readSensor():
-    temperature = i2c.read_i2c_block_data(device["TC74"], 0x00, 1)
-    return[temperature]
+    temperature ,= i2c.read_i2c_block_data(device["TC74"], 0x00, 1)
+    return temperature
 
 def setupRTC():
     currentTime = [0x00,0x36,0x15,0x02,0x19,0x05,0x20]
-    i2c.write_i2c_block_data(device["DS3231"],0x00,currentTime)
+    i2c.write_i2c_block_data(device["DS1338"],0x00,currentTime)
 
 @blynk.handle_event('write V1')
 def changeSetTemp(pin, value):
@@ -42,7 +42,7 @@ setupRTC()
 oldSeconds = 0
 while(True):
     blynk.run()
-    currentTime = i2c.read_i2c_block_data(device["DS3231"],0x00,18)
+    currentTime = i2c.read_i2c_block_data(device["DS1338"],0x00,3)
     if abs(currentTime[0] - oldSeconds) >= 1:
         oldSeconds = currentTime[0]
         temp = readSensor()
@@ -57,4 +57,3 @@ while(True):
     blynk.virtual_write(pins["Seconds"],hex(currentTime[0])[2:])
     blynk.virtual_write(pins["Minutes"],hex(currentTime[1])[2:])
     blynk.virtual_write(pins["Hours"],  hex(currentTime[2])[2:])
-    
